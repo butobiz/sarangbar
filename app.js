@@ -1,9 +1,10 @@
-import { signInWithCustomToken, signInAnonymously, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { signInAnonymously, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { auth, db, googleProvider, appId } from "./firebase.js";
 
 let currentUser = null;
 let isViewMode = false;
+let unsubscribeSnapshot = null; // Mencegah memory leak pada database
 
 // --- KONSTANTA & TEMA ---
 const SOCIAL_PLATFORMS = [
@@ -136,7 +137,7 @@ onAuthStateChanged(auth, async (user) => {
       lucide.createIcons();
       window.renderApp(); 
     }
-    return; // Hentikan eksekusi di sini, biarkan onAuthStateChanged terpanggil lagi otomatis setelah login anonim sukses
+    return; // Hentikan eksekusi di sini
   }
 
   // Jika kode sampai ke sini, berarti user SUDAH login (baik via Google atau Anonim)
@@ -163,9 +164,14 @@ onAuthStateChanged(auth, async (user) => {
   isViewMode = !!viewUserId && viewUserId !== user.uid;
   const targetUserId = viewUserId || user.uid;
 
+  // HAPUS LISTENER LAMA JIKA ADA (Mencegah Memory Leak)
+  if (unsubscribeSnapshot) {
+    unsubscribeSnapshot();
+  }
+
   const docRef = doc(db, 'profiles', targetUserId);
   
-  onSnapshot(docRef, (snapshot) => {
+  unsubscribeSnapshot = onSnapshot(docRef, (snapshot) => {
     document.getElementById('cloud-status')?.classList.add('opacity-0'); 
     
     if (snapshot.exists()) {
