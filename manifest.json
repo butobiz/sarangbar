@@ -1,21 +1,22 @@
 {
-  "name": "Sarangbar Link Dashboard",
+  "name": "Sarangbar",
   "short_name": "Sarangbar",
-  "description": "Dashboard Tautan Profil Modern ala Gen-Z",
+  "description": "Jembatan Kamu Menuju Audiens",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
   "icons": [
     {
-      "src": "./icons/icon-192.png",
+      "src": "./icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "./icons/icon-512.png",
+      "src": "./icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ]
+
 }
