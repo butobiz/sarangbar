@@ -1,6 +1,37 @@
+/* =========================================================
+   OPTIMASI NATIVE APP (Mencegah Zoom, Tahan Tarikan, Blok Biru)
+   ========================================================= */
+html, body {
+  /* Menghentikan layar memantul (rubber-banding) saat di-scroll mentok */
+  overscroll-behavior-y: none;
+  
+  /* Menghilangkan kedipan biru/abu-abu saat menekan tombol di HP */
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Mematikan delay 300ms dan mencegah double-tap zoom */
+  touch-action: manipulation;
+  
+  /* Mencegah teks bisa di-blok (select) agar terasa seperti app beneran */
+  -webkit-user-select: none;
+  user-select: none;
+  
+  /* Mencegah browser menyesuaikan font sendiri saat HP dimiringkan */
+  -webkit-text-size-adjust: none;
+}
+
+/* KECUALI KOLOM INPUT: Teks di dalamnya harus tetap bisa diketik & diblok */
+input, textarea {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+/* =========================================================
+   STYLE BAWAAN SARANGBAR
+   ========================================================= */
 body { 
   transition: background-image 0.5s ease-in-out, background-color 0.5s ease-in-out; 
 }
+
 .bg-dark-pattern {
   background-color: #0f172a;
   background-image: 
@@ -9,12 +40,16 @@ body {
   background-size: 32px 32px;
   background-position: 0 0, 16px 16px;
 }
+
 @keyframes shimmer { 
   100% { transform: translateX(150%); } 
 }
+
 .will-change-transform { 
   will-change: transform; 
 }
+
+/* Kustomisasi Scrollbar Minimalis */
 ::-webkit-scrollbar { 
   width: 6px; 
 }
@@ -25,10 +60,12 @@ body {
   background: #475569; 
   border-radius: 4px; 
 }
+
+/* Class pembantu untuk menghilangkan scrollbar tapi tetap bisa di-scroll */
 .no-scrollbar::-webkit-scrollbar { 
   display: none; 
 }
 .no-scrollbar { 
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
