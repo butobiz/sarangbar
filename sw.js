@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sarangbar-v1';
+const CACHE_NAME = 'sarangbar-v1.1';
 const ASSETS = [
   './',
   './index.html',
@@ -28,3 +28,4 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
