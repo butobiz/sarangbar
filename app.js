@@ -1,5 +1,5 @@
-import { signInWithCustomToken, signInAnonymously, onAuthStateChanged, signInWithPopup, signOut } from "[https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js](https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js)";
-import { doc, setDoc, onSnapshot } from "[https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js](https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js)";
+import { signInWithCustomToken, signInAnonymously, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { auth, db, googleProvider, appId } from "./firebase.js";
 
 let currentUser = null;
@@ -46,12 +46,12 @@ const THEME_OPTIONS = [
 
 // --- STATE APLIKASI ---
 let state = {
-  profile: { name: "Pengguna Baru", bio: "Halo! Ini adalah profil Sarangbar baruku.", avatar: "[https://api.dicebear.com/7.x/notionists/svg?seed=Halo](https://api.dicebear.com/7.x/notionists/svg?seed=Halo)", cardThemeId: "indigo" },
+  profile: { name: "Pengguna Baru", bio: "Halo! Ini adalah profil Sarangbar baruku.", avatar: "https://api.dicebear.com/7.x/notionists/svg?seed=Halo", cardThemeId: "indigo" },
   appConfig: { backgroundImage: "" },
-  socials: [ { id: 101, platform: 'instagram', url: '[https://instagram.com](https://instagram.com)' } ],
+  socials: [ { id: 101, platform: 'instagram', url: 'https://instagram.com' } ],
   links: [ 
-    { id: 1, title: "Website Utama", url: "[https://example.com](https://example.com)", image: "", theme: "bg-indigo-600/80 text-white backdrop-blur-md", tag: "Main" },
-    { id: 2, title: "Portofolio", url: "[https://example.com](https://example.com)", image: "", theme: "bg-slate-800/80 text-white backdrop-blur-md", tag: "Kerja" }
+    { id: 1, title: "Website Utama", url: "https://example.com", image: "", theme: "bg-indigo-600/80 text-white backdrop-blur-md", tag: "Main" },
+    { id: 2, title: "Portofolio", url: "https://example.com", image: "", theme: "bg-slate-800/80 text-white backdrop-blur-md", tag: "Kerja" }
   ],
   editingLinkId: null, 
   tempProfileThemeId: "indigo", 
