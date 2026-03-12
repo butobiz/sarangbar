@@ -120,27 +120,26 @@ async function saveStateToCloud() {
 }
 
 // --- OTENTIKASI & MULTI-TENANT ---
-const initAuth = async () => {
-  try {
-    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-      await signInWithCustomToken(auth, __initial_auth_token);
-    } else {
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    // Jika benar-benar kosong (belum ada sesi), baru eksekusi login Anonim
+    try {
       await signInAnonymously(auth);
+    } catch(e) { 
+      console.error("Auth error:", e); 
+      const cloudStatus = document.getElementById('cloud-status');
+      if (cloudStatus) {
+          cloudStatus.innerHTML = `<i data-lucide="wifi-off" class="w-3 h-3"></i> Offline`;
+          cloudStatus.className = "absolute top-4 left-4 text-[10px] font-bold text-rose-400 bg-rose-400/10 px-3 py-1.5 rounded-full border border-rose-400/20 backdrop-blur-md flex items-center gap-1.5 transition-opacity duration-300";
+      }
+      showToast("Mode Offline aktif.");
+      lucide.createIcons();
+      window.renderApp(); 
     }
-  } catch(e) { 
-    console.error("Auth error:", e); 
-    const cloudStatus = document.getElementById('cloud-status');
-    if (cloudStatus) {
-        cloudStatus.innerHTML = `<i data-lucide="wifi-off" class="w-3 h-3"></i> Offline`;
-        cloudStatus.className = "absolute top-4 left-4 text-[10px] font-bold text-rose-400 bg-rose-400/10 px-3 py-1.5 rounded-full border border-rose-400/20 backdrop-blur-md flex items-center gap-1.5 transition-opacity duration-300";
-    }
-    showToast("Mode Offline aktif.");
-    lucide.createIcons();
-    window.renderApp(); 
+    return; // Hentikan eksekusi di sini, biarkan onAuthStateChanged terpanggil lagi otomatis setelah login anonim sukses
   }
-};
 
-onAuthStateChanged(auth, (user) => {
+  // Jika kode sampai ke sini, berarti user SUDAH login (baik via Google atau Anonim)
   currentUser = user;
   
   const btnGoogle = document.getElementById('btn-google-login');
@@ -148,7 +147,7 @@ onAuthStateChanged(auth, (user) => {
   const statusText = document.getElementById('account-status-text');
   
   if (btnGoogle && btnLogout && statusText) {
-    if (user && !user.isAnonymous) {
+    if (!user.isAnonymous) {
       btnGoogle.classList.add('hidden');
       btnLogout.classList.remove('hidden');
       statusText.innerText = user.email || "Terhubung dengan Google";
@@ -159,39 +158,34 @@ onAuthStateChanged(auth, (user) => {
     }
   }
 
-  if (user) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const viewUserId = urlParams.get('v');
-    isViewMode = !!viewUserId && viewUserId !== user.uid;
-    const targetUserId = viewUserId || user.uid;
+  const urlParams = new URLSearchParams(window.location.search);
+  const viewUserId = urlParams.get('v');
+  isViewMode = !!viewUserId && viewUserId !== user.uid;
+  const targetUserId = viewUserId || user.uid;
 
-    const docRef = doc(db, 'profiles', targetUserId);
+  const docRef = doc(db, 'profiles', targetUserId);
+  
+  onSnapshot(docRef, (snapshot) => {
+    document.getElementById('cloud-status')?.classList.add('opacity-0'); 
     
-    onSnapshot(docRef, (snapshot) => {
-      document.getElementById('cloud-status')?.classList.add('opacity-0'); 
-      
-      if (snapshot.exists()) {
-        const data = snapshot.data(); 
-        state.profile = data.profile || state.profile; 
-        state.appConfig = data.appConfig || state.appConfig;
-        state.socials = data.socials || state.socials; 
-        state.links = data.links || state.links;
-        window.renderApp();
+    if (snapshot.exists()) {
+      const data = snapshot.data(); 
+      state.profile = data.profile || state.profile; 
+      state.appConfig = data.appConfig || state.appConfig;
+      state.socials = data.socials || state.socials; 
+      state.links = data.links || state.links;
+      window.renderApp();
+    } else {
+      if (isViewMode) {
+        document.getElementById('display-name').innerText = "Profil Tidak Ditemukan";
+        document.getElementById('display-bio').innerText = "Tautan ini mungkin sudah kadaluarsa atau salah ketik.";
       } else {
-        if (isViewMode) {
-          document.getElementById('display-name').innerText = "Profil Tidak Ditemukan";
-          document.getElementById('display-bio').innerText = "Tautan ini mungkin sudah kadaluarsa atau salah ketik.";
-        } else {
-          saveStateToCloud(); 
-          window.renderApp();
-        }
+        saveStateToCloud(); 
+        window.renderApp();
       }
-    }, (error) => { console.error("Cloud Error:", error); window.renderApp(); });
-  } else if (!currentUser) {
-    window.renderApp();
-  }
+    }
+  }, (error) => { console.error("Cloud Error:", error); window.renderApp(); });
 });
-initAuth();
 
 // --- FUNGSI UTILITAS: KOMPRESI GAMBAR ---
 window.handleImageUpload = function(inputElement, maxWidth, callback, isBackground = false) {
@@ -467,3 +461,8 @@ if (tiltCard) {
   });
   tiltCard.addEventListener('mouseleave', () => { tiltCard.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`; tiltCard.style.transition = 'transform 0.5s ease-out'; });
 }
+
+// --- INISIALISASI ICON GLOBAL ---
+document.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+});
