@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sarangbar</title>
   
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0f172a">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="icon" type="image/png" href="./icons/icon-192.png">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./style.css">
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -164,13 +165,14 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
+        // Penyesuaian path agar lebih aman di GitHub Pages
+        navigator.serviceWorker.register('./sw.js')
           .then(reg => console.log('Service Worker aktif!', reg))
           .catch(err => console.error('Service Worker gagal dipasang: ', err));
       });
     }
   </script>
   
-  <script type="module" src="app.js"></script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
