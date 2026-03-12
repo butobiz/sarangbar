@@ -6,8 +6,8 @@ const ASSETS = [
   './firebase.js',
   './app.js',
   './manifest.json',
-  '[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)',
-  '[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)'
+  'https://cdn.tailwindcss.com',
+  'https://unpkg.com/lucide@latest'
 ];
 
 // Instal dan simpan cache
